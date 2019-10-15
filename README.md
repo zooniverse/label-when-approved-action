@@ -4,22 +4,23 @@ This GitHub Action applies a label of your choice to pull requests that reach a 
 
 ## Usage
 
-This Action subscribes to [Pull request review events](https://developer.github.com/v3/activity/events/types/#pullrequestreviewevent) which fire whenever pull requests are approved. The action requires two environment variables – a label name and the number of required approvals.
+This Action subscribes to [Pull request review events](https://developer.github.com/v3/activity/events/types/#pullrequestreviewevent) which fire whenever pull requests are approved. The action requires two environment variables – the label name to add and the number of required approvals. Optionally you can provide a label name to remove.
 
 ```workflow
-workflow "Label approved pull requests" {
-  on = "pull_request_review"
-  resolves = ["Label when approved"]
-}
-
-action "Label when approved" {
-  uses = "pullreminders/label-when-approved-action@master"
-  secrets = ["GITHUB_TOKEN"]
-  env = {
-    LABEL_NAME = "approved"
-    APPROVALS  = "2"
-  }
-}
+on: pull_request_review
+name: Label approved pull requests
+jobs:
+  labelWhenApproved:
+    name: Label when approved
+    runs-on: ubuntu-latest
+    steps:
+    - name: Label when approved
+      uses: pullreminders/label-when-approved-action@master
+      env:
+        APPROVALS: "2"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ADD_LABEL: "approved"
+        REMOVE_LABEL: "awaiting review"
 ```
 
 ## Demo
